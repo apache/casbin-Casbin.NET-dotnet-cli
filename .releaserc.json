@@ -1,0 +1,29 @@
+{  
+  "branches": [  
+    "master",  
+    "main",  
+    {  
+      "name": "dev",  
+      "prerelease": true  
+    },  
+    {  
+      "name": "beta",  
+      "prerelease": true  
+    },  
+    {  
+      "name": "+([0-9])?(.{+([0-9]),x}).x",  
+      "prerelease": false  
+    }  
+  ],  
+  "plugins": [  
+    "@semantic-release/commit-analyzer",  
+    "@semantic-release/release-notes-generator",  
+    ["@semantic-release/github", {  
+      "assets": [  
+        "dist/casbin-dotnet-cli-linux-*",  
+        "dist/casbin-dotnet-cli-darwin-*",  
+        "dist/casbin-dotnet-cli-windows-*"  
+      ]  
+    }]  
+  ]
+}  
