@@ -14,7 +14,8 @@
 
 using CasbinCli.Commands;  
 using System.CommandLine;  
-using System.Reflection;  
+using System.Reflection;
+using Casbin;  
   
 namespace CasbinCli  
 {  
@@ -33,7 +34,7 @@ namespace CasbinCli
         {  
             try  
             {  
-                var casbinAssembly = Assembly.GetAssembly(typeof(NetCasbin.Enforcer));  
+                var casbinAssembly = Assembly.GetAssembly(typeof(Casbin.Enforcer));  
                 return casbinAssembly?.GetName().Version?.ToString() ?? "unknown";  
             }  
             catch  
