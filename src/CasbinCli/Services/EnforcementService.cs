@@ -76,6 +76,10 @@ namespace CasbinCli.Services
                 }  
   
                 var enforcer = new Enforcer(modelPath, policyPath);  
+                
+                // Register custom functions according to Casbin documentation
+                enforcer.AddFunction("keyMatch5", new KeyMatch5Function());
+                
                 var parameters = ProcessParameters(args);  
   
                 if (isEnforceEx)  
