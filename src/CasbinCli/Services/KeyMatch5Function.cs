@@ -5,7 +5,7 @@ using NetCasbin.Abstractions;
 namespace CasbinCli.Services  
 {  
     /// <summary>
-    /// KeyMatch5: 忽略查询参数；支持 {var}（单段、≥1、不含 /）与 '.*'（跨段、≥0、含 /）
+    /// KeyMatch5: Ignores query parameters; supports {var} (single segment, ≥1, no /) and '.*' (cross-segment, ≥0, with /)
     /// </summary>
     public class KeyMatch5Function : AbstractFunction
     {
@@ -21,24 +21,24 @@ namespace CasbinCli.Services
 
         private static bool KeyMatch5(string key1, string key2)
         {
-            // 1) 去掉查询参数
+            // 1) Remove query parameters
             var k1 = (key1 ?? string.Empty).Split('?')[0];
             var k2 = (key2 ?? string.Empty).Split('?')[0];
 
-            // 2) 先把 {name} 替换为占位符，避免被转义破坏
+            // 2) Replace {name} with placeholder first to avoid being destroyed by escaping
             const string VAR_TOKEN = "__VAR_SEG__";
             var pre = Regex.Replace(k2, @"\{[^}]+\}", VAR_TOKEN);
 
-            // 3) 对剩余字符整体转义（保证字面量安全）
+            // 3) Escape remaining characters as a whole (ensure literal safety)
             var esc = Regex.Escape(pre);
 
-            // 4) 还原占位符为“单段不含 / 的 1+ 字符”
+            // 4) Restore placeholder to "single segment without /, 1+ characters"
             esc = esc.Replace(VAR_TOKEN, @"[^/]+");
 
-            // 5) 严格只把字面 '\.\*' 还原为通配 '.*'（可跨段、可为零长）
+            // 5) Strictly restore literal '\.\*' to wildcard '.*' (can cross segments, can be zero length)
             esc = esc.Replace(@"\.\*", @".*");
 
-            // 6) 全匹配锚定
+            // 6) Full match anchoring
             var pattern = "^" + esc + "$";
 
             return Regex.IsMatch(k1, pattern);
