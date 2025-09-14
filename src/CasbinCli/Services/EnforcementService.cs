@@ -37,13 +37,6 @@ namespace CasbinCli.Services
                     return new ResponseBody { Allow = false, Explain = Array.Empty<string>() };  
                 }  
   
-                if (!File.Exists(policyPath))  
-                {  
-                    var error = $"Policy file not found: {policyPath}";  
-                    Console.Error.WriteLine($"Error during enforcement: {error}");  
-                    return new ResponseBody { Allow = false, Explain = Array.Empty<string>() };  
-                }  
-  
                 // Verify the format of the configuration file  
                 var modelValidation = ConfigValidationService.ValidateModelFile(modelPath);  
                 if (!modelValidation.IsValid)  
@@ -51,13 +44,28 @@ namespace CasbinCli.Services
                     Console.Error.WriteLine($"Error during enforcement: {modelValidation.Message}");  
                     return new ResponseBody { Allow = false, Explain = Array.Empty<string>() };  
                 }  
-  
-                var policyValidation = ConfigValidationService.ValidatePolicyFile(policyPath);  
-                if (!policyValidation.IsValid)  
+
+                // Check if policy file exists, if not create an empty one or allow empty policy
+                if (!File.Exists(policyPath))  
                 {  
-                    Console.Error.WriteLine($"Error during enforcement: {policyValidation.Message}");  
-                    return new ResponseBody { Allow = false, Explain = Array.Empty<string>() };  
+                    // Create an empty policy file to allow matching logic to continue
+                    File.WriteAllText(policyPath, "");
+                    Console.WriteLine($"Warning: Policy file not found, created empty policy file: {policyPath}");
                 }  
+                else
+                {
+                    // Only validate policy file if it exists and is not empty
+                    var policyContent = File.ReadAllText(policyPath).Trim();
+                    if (!string.IsNullOrEmpty(policyContent))
+                    {
+                        var policyValidation = ConfigValidationService.ValidatePolicyFile(policyPath);  
+                        if (!policyValidation.IsValid)  
+                        {  
+                            Console.Error.WriteLine($"Error during enforcement: {policyValidation.Message}");  
+                            return new ResponseBody { Allow = false, Explain = Array.Empty<string>() };  
+                        }
+                    }
+                }
   
                 // Verify parameters  
                 if (args == null || args.Length == 0)  
