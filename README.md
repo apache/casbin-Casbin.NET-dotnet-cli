@@ -42,7 +42,6 @@ casbin-dotnet-cli/
 │   ├── abac_model.conf                 # ABAC model file  
 │   └── abac_policy.csv                 # ABAC policy file   
 ├── build.ps1                           # Local multi-platform build script  
-├── .releaserc.json                     # Semantic release configuration  
 ├── README.md                           # Project documentation  
 └── casbin-dotnet-cli.sln              # Visual Studio solution file  
 ```
