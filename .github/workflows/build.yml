@@ -111,12 +111,6 @@ jobs:
           dotnet-version: '8.0'    
           dotnet-quality: 'ga'    
     
-      - name: Get Casbin.NET version    
-        id: casbin-version    
-        run: |    
-          version=$(dotnet list src/CasbinCli/CasbinCli.csproj package | grep "Casbin.NET" | awk '{print $3}')    
-          echo "version=$version" >> $GITHUB_OUTPUT    
-  
       - name: Download all artifacts  
         uses: actions/download-artifact@v4  
         with:  
